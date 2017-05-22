@@ -61,7 +61,7 @@ Were I to do this project again, I would create a structure to change each of th
 
 *3. Describe how (and identify where in your code) you trained a classifier using your selected HOG features (and color features if you used them).*
 
-In the third code block of the iPython notebook (under the heading "Train the model"), I read in all the training data, and brake it into two sets, "cars" and "notcars".  After shuffling the sets, I truncated them to a random collection of a maximum of 1200 each; any more than that would cause the Windows Edge browser to crash during training.  Since I'm stuck on a windows machine for running Jupyter at the moment, this presented a limitation I was unable to work around during the time available.  Moving the training to AWS would be preferable, but I would need to rework the code into individual .py files and upload everything to AWS, which I have not had the opportunity to do.
+In the third code block of the iPython notebook (under the heading "Train the model"), I read in all the training data, and break it into two sets, "cars" and "notcars".  After shuffling the sets, I truncate them to a random collection of a maximum of 1200 each; any more than that would cause the Windows Edge browser to crash during training.  Since I'm stuck on a Windows machine for running Jupyter at the moment, this presented a limitation I was unable to work around during the time available.  Moving the training to AWS would be preferable, but I would need to rework the code into individual .py files and upload everything to AWS, which I have not had the opportunity to do.
 
 After setting the training variables, I trained a linear SVC using the extracted features from the car and notcar image sets, scaling them using StandardScaler(), and then breaking the set into 80% training and 20% testing data.  The SVC is trained with svc.fit(X_train, y_train), and the accuracy is calculated with svc.score(X_test, y_test). 
 
@@ -75,6 +75,8 @@ I set up 6 sliding window processes with different windows sizes and logic range
 
 The search_windows() function is then used to actually scan through each window in the collected slide_window grid, and the snipped image windows are used as input for SVC prediction, returning a list of "hot_windows", or windows which have been predicted as containing a car by the SVC.
 
+The overlap started at 0.5, but I increased it to 0.7 in order deregularize the positioning of the windows; 0.5 simply gave a half-step to the position, where 0.7 provided a fuller coverage.
+
 *2. Show some examples of test images to demonstrate how your pipeline is working.  What did you do to optimize the performance of your classifier?*
 
 The 6 window sizes added significant processing time to each video frame.  Due to this, I finally limited my sliding window search to 4, and limited to range of the image they searched (no tiny cars should be visible near the very bottom of the image, so I didn't scan that area with the 32x32 window).  Here are some example images:
@@ -82,12 +84,12 @@ The 6 window sizes added significant processing time to each video frame.  Due t
 ![alt text][image4]
 ---
 
-** Video Implementation**
+**Video Implementation**
 
-*1. Provide a link to your final video output.  Your pipeline should perform reasonably well on the entire project video (somewhat wobbly or unstable bounding boxes are ok as long as you are identifying the vehicles most of the time with minimal false positives.)
+*1. Provide a link to your final video output.  Your pipeline should perform reasonably well on the entire project video (somewhat wobbly or unstable bounding boxes are ok as long as you are identifying the vehicles most of the time with minimal false positives.)*
 Here's a [link to my video result](./result.mp4), with the file name result.mp4.
 
-*2. Describe how (and identify where in your code) you implemented some kind of filter for false positives and some method for combining overlapping bounding boxes.
+*2. Describe how (and identify where in your code) you implemented some kind of filter for false positives and some method for combining overlapping bounding boxes.*
 
 In order to smooth out detections, limit overlapping boxes, and reduce the impact of false positives, I implemented a two-step averaging process of the "hot_windows" found above.  For each frame of video, I created a heatmap of the collected hot_windows, increasing the heatmap value of a pixel by 1 for every window it fell into.  For areas with cars, this method provided a higher heatmap value than in areas with false positives.  Because of this, the areas with high heatmap values can be expected to be cars, while low heatmap values indicate likely false positives.  
 
@@ -97,11 +99,11 @@ Using `scipy.ndimage.measurements.label()`, I had the system label the different
 
 Here's an example result showing the heatmap from a series of frames of video, the result of `scipy.ndimage.measurements.label()` and the bounding boxes then overlaid on the last frame of video:
 
-* Here are the six test frames and their corresponding heatmaps and labels:*
+*Here are the six test frames and their corresponding heatmaps and labels:*
 
 ![alt text][image5]
 
-* Here the resulting bounding boxes are drawn onto the last frame in the series:*
+*Here the resulting bounding boxes are drawn onto the last frame in the series:*
 ![alt text][image7]
 ---
 
