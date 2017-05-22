@@ -22,12 +22,14 @@ The goals / steps of this project were:
 [video1]: ./result.mp4
 
 # [Rubric](https://review.udacity.com/#!/rubrics/513/view) Points
-##Here, each of the rubric points are considered individually, along with a description of how each is addressed each point in the project  implementation.  
+Here, each of the rubric points are considered individually, along with a description of how each is addressed each point in the project  implementation.  
 
 ---
-##Writeup / README
+**Writeup / README**
 
-##1. Provide a Writeup / README that includes all the rubric points and how each one was addressed.  This is that writeup.
+*1. Provide a Writeup / README that includes all the rubric points and how each one was addressed.*
+
+This is that writeup.
 
 ##Histogram of Oriented Gradients (HOG)
 
